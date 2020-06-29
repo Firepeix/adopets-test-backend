@@ -2,36 +2,29 @@
 
 namespace App\Providers;
 
-use App\Http\Requests\Authentication\RegisterRequest;
-use App\Http\Requests\Interfaces\Authentication\RegisterRequestInterface;
-use App\Repositories\Authentication\UserRepository;
-use App\Repositories\Interfaces\Authentication\UserRepositoryInterface;
-use App\Services\Authentication\RegisterService;
-use App\Services\Interfaces\Authentication\RegisterServiceInterface;
+use App\Http\Requests\Backoffice\Store\CreateProductRequest;
+use App\Http\Requests\Backoffice\Store\UpdateProductRequest;
+use App\Http\Requests\Interfaces\Backoffice\Store\CreateProductRequestInterface;
+use App\Http\Requests\Interfaces\Backoffice\Store\UpdateProductRequestInterface;
+use App\Repositories\Backoffice\Store\ProductRepository;
+use App\Repositories\Interfaces\Backoffice\Store\ProductRepositoryInterface;
+use App\Services\Backoffice\Store\ProductService;
+use App\Services\Interfaces\Backoffice\Store\ProductServiceInterface;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Gate;
 
-class AuthServiceProvider extends ServiceProvider
+class StoreServiceProvider extends ServiceProvider
 {
-    /**
-     * The policy mappings for the application.
-     *
-     * @var array
-     */
-    protected $policies = [
-        // 'App\Model' => 'App\Policies\ModelPolicy',
-    ];
-
     protected $services = [
-      RegisterServiceInterface::class => RegisterService::class
+        ProductServiceInterface::class => ProductService::class
     ];
 
     protected $requests = [
-        RegisterRequestInterface::class => RegisterRequest::class
+        CreateProductRequestInterface::class => CreateProductRequest::class,
+        UpdateProductRequestInterface::class => UpdateProductRequest::class
     ];
 
     protected $repositories = [
-        UserRepositoryInterface::class => UserRepository::class
+        ProductRepositoryInterface::class => ProductRepository::class
     ];
 
     /**
@@ -41,7 +34,6 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->registerPolicies();
         $this->registerServices();
         $this->registerRequests();
         $this->registerRepositories();
