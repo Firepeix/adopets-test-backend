@@ -1,0 +1,26 @@
+version: '2'
+volumes:
+  mysql-data:
+    driver: local
+services:
+  mysql:
+    image: mysql:5.7
+    container_name: mysql-adopets
+    volumes:
+    - mysql-data:/var/lib/mysql
+    ports:
+    - "33060:3306"
+    environment:
+    - MYSQL_ROOT_PASSWORD=root
+    - MYSQL_DATABASE=adopets
+    - MYSQL_USER=root
+    - MYSQL_PASSWORD=root
+  app:
+    image: ambientum/php:7.3-nginx
+    container_name: app-adopets
+    volumes:
+    - .:/var/www/app
+    ports:
+    - "8000:8080"
+    links:
+    - mysql
