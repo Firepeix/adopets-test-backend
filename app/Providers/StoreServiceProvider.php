@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Filters\Backoffice\Store\ProductFilter;
+use App\Filters\FilterInterface;
+use App\Http\Controllers\Backoffice\Store\ProductController;
 use App\Http\Requests\Backoffice\Store\CreateProductRequest;
 use App\Http\Requests\Backoffice\Store\UpdateProductRequest;
 use App\Http\Requests\Interfaces\Backoffice\Store\CreateProductRequestInterface;
@@ -27,6 +30,10 @@ class StoreServiceProvider extends ServiceProvider
         ProductRepositoryInterface::class => ProductRepository::class
     ];
 
+    protected $filters = [
+        ProductFilter::class => ProductController::class
+    ];
+
     /**
      * Register any authentication / authorization services.
      *
@@ -37,26 +44,34 @@ class StoreServiceProvider extends ServiceProvider
         $this->registerServices();
         $this->registerRequests();
         $this->registerRepositories();
+        $this->registerFilters();
     }
 
-    public function registerServices()
+    protected function registerServices()
     {
         foreach ($this->services as $abstract => $service) {
             $this->app->bind($abstract, $service);
         }
     }
 
-    public function registerRequests()
+    protected function registerRequests()
     {
         foreach ($this->requests as $abstract => $request) {
             $this->app->bind($abstract, $request);
         }
     }
 
-    public function registerRepositories()
+    protected function registerRepositories()
     {
         foreach ($this->repositories as $abstract => $repository) {
             $this->app->bind($abstract, $repository);
+        }
+    }
+
+    protected function registerFilters()
+    {
+        foreach ($this->filters as $filter => $controller) {
+            $this->app->when($controller)->needs(FilterInterface::class)->give($filter);
         }
     }
 

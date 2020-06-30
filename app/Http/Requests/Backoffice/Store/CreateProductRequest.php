@@ -8,6 +8,7 @@ use App\Http\Requests\Interfaces\Backoffice\Store\CreateProductRequestInterface;
 use App\Primitives\NumberPrimitive;
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Str;
 
 class CreateProductRequest extends FormRequest implements CreateProductRequestInterface
 {
@@ -34,7 +35,7 @@ class CreateProductRequest extends FormRequest implements CreateProductRequestIn
 
     public function createUUID(): string
     {
-        return substr(base64_encode($this->getName() . Carbon::now()->toDateTimeString()), 0, 10);
+        return substr(base64_encode(Str::random(5) . Carbon::now()->toDateTimeString()), 0, 10);
     }
 
     public function getDescription(): string

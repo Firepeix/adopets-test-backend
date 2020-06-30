@@ -25,15 +25,34 @@ class ProductControllerTest extends TestCase
         $this->assertTrue($products->isNotEmpty());
     }
 
-    public function testCreateSuccess()
+    public function testGetFilteredFind()
     {
-        $product    = [
+        $name = $this->faker->name;
+        $this->testCreateSuccess(['name' => $name]);
+        $request = $this->json('GET', $this->getUri() . '/backoffice/store/products', ['name' => $name]);
+        $request->assertStatus(200);
+        $products = collect(json_decode($request->getContent())->data);
+        $this->assertTrue($products->count() === 1);
+    }
+
+    public function testGetFilteredNotFind()
+    {
+        $this->testCreateSuccess();
+        $request = $this->json('GET', $this->getUri() . '/backoffice/store/products', ['name' => 'asdasdasdasd']);
+        $request->assertStatus(200);
+        $products = collect(json_decode($request->getContent())->data);
+        $this->assertTrue($products->isEmpty());
+    }
+
+    public function testCreateSuccess(array $abstractProduct = [])
+    {
+        $product    = array_merge([
             'name' => $this->faker->words(3, true),
             'description' => $this->faker->text($this->faker->numberBetween(50, 499)),
             'category' => $this->faker->word,
             'price' => $this->faker->numberBetween(1000, 25000),
             'stock_amount' => $this->faker->numberBetween(0, 13)
-        ];
+        ], $abstractProduct);
         $request = $this->json('POST', $this->getUri() . '/backoffice/store/products', $product);
         $request->assertStatus(200);
         $this->assertDatabaseHas('products', $product);
