@@ -5,10 +5,13 @@ namespace App\Models\Authentication;
 
 
 use App\Interfaces\Authentication\RegisterUserInterface;
-use App\Models\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Laravel\Passport\HasApiTokens;
 
-class User extends Model
+class User extends Authenticatable
 {
+    use HasApiTokens;
+
     public function register(RegisterUserInterface $registerUser): void
     {
         $this->name     = $registerUser->getName();
@@ -16,5 +19,4 @@ class User extends Model
         $this->password = $registerUser->getPassword();
         $this->uuid     = $registerUser->createUUID();
     }
-
 }

@@ -20,7 +20,7 @@ class Controller extends BaseController
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
     private $manager;
-    private $response;
+    protected $response;
 
     public function __construct(Response $response)
     {

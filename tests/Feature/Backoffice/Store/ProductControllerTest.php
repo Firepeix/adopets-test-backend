@@ -4,7 +4,9 @@
 namespace Tests\Feature\Backoffice\Store;
 
 
+use App\Models\Authentication\User;
 use App\Repositories\Backoffice\Store\ProductRepository;
+use Laravel\Passport\Passport;
 use Tests\TestCase;
 
 class ProductControllerTest extends TestCase
@@ -18,6 +20,7 @@ class ProductControllerTest extends TestCase
 
     public function testGetSuccess()
     {
+        Passport::actingAs(factory(User::class)->create(), ['*']);
         $this->testCreateSuccess();
         $request = $this->json('GET', $this->getUri() . '/backoffice/store/products');
         $request->assertStatus(200);
@@ -27,6 +30,7 @@ class ProductControllerTest extends TestCase
 
     public function testGetFilteredFind()
     {
+        Passport::actingAs(factory(User::class)->create(), ['*']);
         $name = $this->faker->name;
         $this->testCreateSuccess(['name' => $name]);
         $request = $this->json('GET', $this->getUri() . '/backoffice/store/products', ['name' => $name]);
@@ -37,6 +41,7 @@ class ProductControllerTest extends TestCase
 
     public function testGetFilteredNotFind()
     {
+        Passport::actingAs(factory(User::class)->create(), ['*']);
         $this->testCreateSuccess();
         $request = $this->json('GET', $this->getUri() . '/backoffice/store/products', ['name' => 'asdasdasdasd']);
         $request->assertStatus(200);
@@ -46,6 +51,7 @@ class ProductControllerTest extends TestCase
 
     public function testCreateSuccess(array $abstractProduct = [])
     {
+        Passport::actingAs(factory(User::class)->create(), ['*']);
         $product    = array_merge([
             'name' => $this->faker->words(3, true),
             'description' => $this->faker->text($this->faker->numberBetween(50, 499)),
@@ -60,6 +66,7 @@ class ProductControllerTest extends TestCase
 
     public function testUpdateSuccess()
     {
+        Passport::actingAs(factory(User::class)->create(), ['*']);
         $this->testCreateSuccess();
         $product    = [
             'name' => $this->faker->words(3, true),
@@ -75,6 +82,7 @@ class ProductControllerTest extends TestCase
 
     public function testDeleteSuccess()
     {
+        Passport::actingAs(factory(User::class)->create(), ['*']);
         $this->testCreateSuccess();
         $product = $this->repository->getLastProductCreated();
         $request = $this->json('DELETE', $this->getUri() . '/backoffice/store/products/' . $product->getUUID());
